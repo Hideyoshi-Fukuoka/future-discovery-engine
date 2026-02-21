@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { CoreEngine } from '../../engine/CoreEngine';
 import { GeminiService } from '../../services/GeminiService';
 
-const ResultProcessor = ({ answers, metrics, onRestart }) => {
+const ResultProcessor = ({ appMode, answers, metrics, onRestart }) => {
     const [step, setStep] = useState(0); // 0: report fade-in, 1: buttons visible, 2: json view, 3: future log view
     const [isFading, setIsFading] = useState(false);
     const [futureLogStream, setFutureLogStream] = useState('');
@@ -32,7 +32,7 @@ const ResultProcessor = ({ answers, metrics, onRestart }) => {
             setIsStreaming(true);
             setFutureLogStream('');
 
-            await GeminiService.generateFutureLogStream(report.PersonalKernel, (chunk) => {
+            await GeminiService.generateFutureLogStream(report.PersonalKernel, appMode, (chunk) => {
                 setFutureLogStream(prev => prev + chunk);
             });
             setIsStreaming(false);
@@ -64,14 +64,11 @@ const ResultProcessor = ({ answers, metrics, onRestart }) => {
             <div className={`flex flex-col sm:flex-row gap-4 justify-center transition-opacity duration-1000 w-full ${step >= 1 && step < 2 ? 'opacity-100' : 'opacity-0 pointer-events-none absolute'}`}>
                 {step === 1 && (
                     <>
-                        <button onClick={() => handleAction(2)} className="w-full sm:w-auto px-4 sm:px-6 py-3 border border-cyan-700 text-cyan-400 hover:bg-cyan-900/50 hover:text-cyan-200 transition-colors text-sm sm:text-base focus:outline-none">
-                            [ JSONデータを確認する ]
-                        </button>
-                        <button onClick={() => handleAction(3)} className="w-full sm:w-auto px-4 sm:px-6 py-3 border border-cyan-500 bg-cyan-900/40 text-cyan-100 hover:bg-cyan-800 hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] transition-all text-sm sm:text-base focus:outline-none">
-                            [ 終了する (未来日誌を生成) ]
-                        </button>
-                        <button onClick={() => handleAction('restart')} className="w-full sm:w-auto px-4 sm:px-6 py-3 border border-red-900/50 text-red-400 hover:bg-red-950/50 hover:text-red-300 transition-colors text-sm sm:text-base focus:outline-none">
+                        <button onClick={() => handleAction('restart')} className="w-full sm:w-auto px-4 sm:px-6 py-3 border border-cyan-800 text-cyan-500 hover:bg-cyan-900/50 hover:text-cyan-300 transition-colors text-sm sm:text-base focus:outline-none order-2 sm:order-1">
                             [ 再診断する (因果律リセット) ]
+                        </button>
+                        <button onClick={() => handleAction(3)} className="w-full sm:w-auto px-4 sm:px-6 py-3 border border-cyan-400 bg-cyan-900/40 text-cyan-100 font-bold hover:bg-cyan-800 hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] transition-all text-sm sm:text-base focus:outline-none order-1 sm:order-2">
+                            [ 未来日誌を出力する ]
                         </button>
                     </>
                 )}
@@ -112,8 +109,8 @@ const ResultProcessor = ({ answers, metrics, onRestart }) => {
 
                     {!isStreaming && (
                         <div className="flex justify-center gap-4 mb-10">
-                            <button onClick={() => setStep(1)} className="px-8 py-2 border border-cyan-800 text-cyan-500 hover:bg-cyan-950/50 transition-colors">
-                                メニューへ戻る
+                            <button onClick={() => handleAction('restart')} className="px-8 py-2 border border-cyan-800 text-cyan-500 hover:bg-cyan-950/50 transition-colors">
+                                メニューへ
                             </button>
                             <button onClick={() => handleAction('restart')} className="px-8 py-2 border border-red-900/50 text-red-500 hover:bg-red-950/50 transition-colors">
                                 システム初期化 (新規ユーザー)

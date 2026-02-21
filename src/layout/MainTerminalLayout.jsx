@@ -12,6 +12,7 @@ import { CoreEngine } from '../engine/CoreEngine';
 
 const MainTerminalLayout = () => {
     const {
+        appMode,
         phase,
         currentQuestion,
         currentQuestionIndex,
@@ -45,6 +46,7 @@ const MainTerminalLayout = () => {
 
                     {phase === PHASES.DIAGNOSIS && (
                         <DiagnosisConsole
+                            appMode={appMode}
                             question={currentQuestion}
                             currentQuestionIndex={currentQuestionIndex}
                             totalQuestions={totalQuestions}
@@ -54,6 +56,7 @@ const MainTerminalLayout = () => {
 
                     {phase === PHASES.VERIFICATION && (
                         <VerificationConsole
+                            appMode={appMode}
                             answers={answers}
                             onEdit={jumpToQuestion}
                             onConfirm={finishVerification}
@@ -62,6 +65,7 @@ const MainTerminalLayout = () => {
 
                     {phase === PHASES.RESULT && (
                         <ResultProcessor
+                            appMode={appMode}
                             answers={answers}
                             metrics={hesitationMetrics}
                             onRestart={restartDiagnosis}
@@ -77,7 +81,7 @@ const MainTerminalLayout = () => {
             )}
 
             {/* Paradox Glitch Overlay - Softened to subtle corner warning */}
-            {paradoxAlert && (
+            {paradoxAlert && phase !== PHASES.RESULT && (
                 <div className="fixed bottom-safe left-safe bottom-2 sm:bottom-4 left-2 sm:left-4 z-50 pointer-events-none flex items-center space-x-2 bg-red-950/90 border border-red-800/80 p-2 sm:p-3 shadow-[0_0_15px_rgba(220,38,38,0.5)] animate-pulse max-w-[90vw]">
                     <span className="text-red-500 animate-ping text-xs sm:text-base">●</span>
                     <div className="text-red-400 text-[10px] sm:text-sm font-mono uppercase tracking-widest break-words">

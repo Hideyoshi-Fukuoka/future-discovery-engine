@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { QUESTIONS_DATA } from '../../engine/QuestionsData';
 
-const VerificationConsole = ({ answers, onEdit, onConfirm }) => {
+const VerificationConsole = ({ appMode, answers, onEdit, onConfirm }) => {
     const [isConfirming, setIsConfirming] = useState(false);
 
     const handleConfirm = () => {
@@ -20,9 +20,13 @@ const VerificationConsole = ({ answers, onEdit, onConfirm }) => {
             <div className="flex-1 overflow-y-auto pr-2 sm:pr-4 mb-8 space-y-4 sm:space-y-2 text-xs sm:text-sm text-slate-300">
                 {QUESTIONS_DATA.map((q, i) => {
                     const selectedIndices = answers[q.id] || [];
+                    const displayText = appMode === 'simple' && q.textSimple ? q.textSimple : q.text;
+
                     const selectedLabels = selectedIndices.map(idx => {
                         const opt = q.options[idx - 1];
-                        return opt ? `[${idx}] ${opt.label}` : '';
+                        if (!opt) return '';
+                        const displayLabel = appMode === 'simple' && opt.labelSimple ? opt.labelSimple : opt.label;
+                        return `[${idx}] ${displayLabel}`;
                     }).join(', ');
 
                     return (
@@ -37,7 +41,7 @@ const VerificationConsole = ({ answers, onEdit, onConfirm }) => {
                                 </button>
                             </div>
                             <div className="w-full sm:col-span-6 text-slate-400 group-hover:text-cyan-300 transition-colors leading-relaxed">
-                                {q.text}
+                                {displayText}
                             </div>
                             <div className="w-full sm:col-span-4 text-cyan-400 sm:text-right truncate bg-slate-900/50 sm:bg-transparent p-2 sm:p-0 rounded">
                                 {selectedLabels || '未回答'}

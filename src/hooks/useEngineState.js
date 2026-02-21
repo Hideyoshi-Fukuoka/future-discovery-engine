@@ -3,6 +3,7 @@ import { CoreEngine, PHASES } from '../engine/CoreEngine';
 import { QUESTIONS_DATA } from '../engine/QuestionsData';
 
 export const useEngineState = () => {
+    const [appMode, setAppMode] = useState('future'); // 'simple' or 'future'
     const [phase, setPhase] = useState(PHASES.INITIATION);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [answers, setAnswers] = useState({}); // { "Q1": [1, 3], ... }
@@ -15,7 +16,8 @@ export const useEngineState = () => {
     const [entropy, setEntropy] = useState(0);
     const [paradoxAlert, setParadoxAlert] = useState(null);
 
-    const startDiagnosis = useCallback(() => {
+    const startDiagnosis = useCallback((selectedMode = 'future') => {
+        setAppMode(selectedMode);
         setPhase(PHASES.DIAGNOSIS);
         setCurrentQuestionIndex(0);
         setHesitationMetrics({});
@@ -78,6 +80,7 @@ export const useEngineState = () => {
     }, []);
 
     return {
+        appMode,
         phase,
         currentQuestionIndex,
         currentQuestion: QUESTIONS_DATA[currentQuestionIndex],

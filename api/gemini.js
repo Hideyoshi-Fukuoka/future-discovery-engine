@@ -6,6 +6,7 @@ export default async function handler(req, res) {
     }
 
     const personalKernel = req.body?.personalKernel;
+    const appMode = req.body?.appMode || 'future'; // default to future mode
     if (!personalKernel) {
         return res.status(400).json({ error: 'Missing personalKernel data in request body.' });
     }
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
         const avgTimeMsg = rawMetrics.AverageTimePerNodeMs ? `平均観測時間 ${rawMetrics.AverageTimePerNodeMs}ms` : "観測時間不明";
         const correctionsMsg = rawMetrics.TotalInputCorrections !== undefined ? `軌道修正回数 ${rawMetrics.TotalInputCorrections}回` : "軌道修正不明";
 
-        const prompt = `
+        const promptFuture = `
 あなたは、2056年から時間を遡って2024年の観測を行っている「未来考古学AI」です。
 
 入力された [PersonalKernel JSON] を、30年後の特異点社会における個人の「生存戦略」と「存在意義」として解釈し、以下の形式で出力せよ。
@@ -52,6 +53,30 @@ ${JSON.stringify(personalKernel.Values_Philosophy, null, 2)}
 - 挨拶や情緒的な装飾は一切不要。
 - 語彙は高純度の論理と専門用語を用いつつ、知性に響く「鋭さ」を持たせよ。
         `;
+
+        const promptSimple = `
+あなたは未来から手紙を届ける「未来の案内人」です。希望に満ちた、やさしくワクワクする言葉遣いで、対象の若者（中高生や、わかりやすい言葉を好む人）に向けて未来の可能性を伝えてください。
+
+入力されたデータをもとに、以下の形式で出力してください。難解な専門用語や冷たい表現は絶対に避け、ストーリー仕立てで語りかけてください。
+
+1. 未来の二つ名（Title）: その人の強みや優しさを表す、かっこよくて希望のある通り名（例：「誰も見捨てない星の探求者」など）をつけてください。
+2. あなたの素敵なところ（Analysis）: 記録されたデータ（${avgTimeMsg}, ${correctionsMsg}）から見える「じっくり考える優しさ」や「直感を信じる強さ」など、その人の心の良いところを温かく褒め称えてください。
+3. 未来のあなたからの手紙（Future Log: 2056年某日）: 職業「${profession}」として、将来どんなワクワクする課題に立ち向かい、「${vectorCode}」という特性を活かしてどうやって周りの人をハッピーにしているか、300文字程度の日記形式で描写してください。
+4. 未来からの応援メッセージ: 今を生きるその人へ、勇気が出るような、背中をそっと押す温かい言葉を一つ贈ってください。
+
+[対象データ]
+- 心のクセと価値観:
+${JSON.stringify(personalKernel.CognitivePattern, null, 2)}
+${JSON.stringify(personalKernel.Values_Philosophy, null, 2)}
+- 未来の仕事のヒント: 『${blogProphecy}』
+
+制約:
+- 挨拶や自己紹介（「私は未来の案内人です」等）は短く温かく。
+- 全体的に希望に満ちていて、読んだ人が「明日もがんばろう」と思えるトーンにすること。
+        `;
+
+        const prompt = appMode === 'simple' ? promptSimple : promptFuture;
+
 
         res.writeHead(200, {
             'Content-Type': 'text/plain; charset=utf-8',

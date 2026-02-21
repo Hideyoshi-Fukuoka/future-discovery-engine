@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 
-const DiagnosisConsole = ({ question, currentQuestionIndex, totalQuestions, onAnswer }) => {
+const DiagnosisConsole = ({ appMode, question, currentQuestionIndex, totalQuestions, onAnswer }) => {
   const [selectedIndices, setSelectedIndices] = useState(new Set());
   const [startTime, setStartTime] = useState(Date.now());
   const [corrections, setCorrections] = useState(0);
+
+  const displayText = appMode === 'simple' && question.textSimple ? question.textSimple : question.text;
 
   // Reset metrics when question changes
   useEffect(() => {
@@ -59,21 +61,22 @@ const DiagnosisConsole = ({ question, currentQuestionIndex, totalQuestions, onAn
   return (
     <div className="w-full max-w-2xl font-mono">
       <div className="mb-4 border-b border-cyan-800 pb-2 flex justify-between items-center">
-        <h3 className="text-xl text-cyan-400">
-          [ 状態: Phase 2 | 進捗: {currentQuestionIndex + 1} / {totalQuestions} | モード: 未来探索中 ]
+        <h3 className="text-sm sm:text-xl text-cyan-400">
+          [ {appMode === 'simple' ? '診断' : '状態'}: Phase 2 | {appMode === 'simple' ? '質問' : '進捗'}: {currentQuestionIndex + 1} / {totalQuestions} ]
         </h3>
-        <span className="text-xs text-cyan-700 animate-pulse">AWAITING_INPUT...</span>
+        <span className="text-xs text-cyan-700 animate-pulse hidden sm:inline">AWAITING_INPUT...</span>
       </div>
 
       <div className="mb-8 border-b border-cyan-800 pb-4">
         <p className="text-lg text-white leading-relaxed whitespace-pre-wrap">
-          {question.text}
+          {displayText}
         </p>
       </div>
 
       <div className="space-y-3 mb-8">
         {question.options.map((opt, idx) => {
           const isSelected = selectedIndices.has(idx);
+          const displayLabel = appMode === 'simple' && opt.labelSimple ? opt.labelSimple : opt.label;
           return (
             <div
               key={idx}
@@ -91,7 +94,7 @@ const DiagnosisConsole = ({ question, currentQuestionIndex, totalQuestions, onAn
               </div>
               <span className={`shrink-0 w-8 font-bold ${isSelected ? 'text-cyan-300' : 'text-cyan-700 group-hover:text-cyan-500'}`}>[{idx + 1}]</span>
               <span className={`flex-1 ${isSelected ? 'text-white' : 'text-slate-300 group-hover:text-cyan-100'}`}>
-                {opt.label}
+                {displayLabel}
               </span>
             </div>
           );

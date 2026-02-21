@@ -1,17 +1,18 @@
 export const GeminiService = {
     /**
      * @param {Object} personalKernel The user's JSON report
+     * @param {string} appMode 'simple' or 'future'
      * @param {Function} onChunk Callback for streaming text chunks
      * @returns {Promise<string>} The full text when complete
      */
-    generateFutureLogStream: async (personalKernel, onChunk) => {
+    generateFutureLogStream: async (personalKernel, appMode, onChunk) => {
         try {
             const response = await fetch('/api/gemini', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ personalKernel })
+                body: JSON.stringify({ personalKernel, appMode })
             });
 
             if (!response.body) {

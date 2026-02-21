@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 const InitiationConsole = ({ onStart }) => {
     const [isBooting, setIsBooting] = useState(false);
 
-    const handleBoot = () => {
+    const handleBoot = (mode) => {
         setIsBooting(true);
         setTimeout(() => {
-            onStart();
+            onStart(mode);
         }, 800);
     };
 
@@ -16,26 +16,52 @@ const InitiationConsole = ({ onStart }) => {
                 <h1 className="text-3xl md:text-5xl text-cyan-400 mb-4 md:mb-6 tracking-widest font-bold">
                     未来発見エンジン
                 </h1>
-                <p className="text-cyan-600 tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm animate-pulse break-words">
+                <p className="text-cyan-600 tracking-[0.2em] md:tracking-[0.3em] text-[10px] sm:text-xs md:text-sm animate-pulse break-words">
                     AUTONOMOUS CAUSALITY PREDICTION SYSTEM
                 </p>
             </div>
 
-            <button
-                onClick={handleBoot}
-                disabled={isBooting}
-                className={`
-                    w-full sm:w-auto relative group px-6 sm:px-12 py-4 border border-cyan-500/50 bg-cyan-950/30
-                    text-cyan-300 tracking-widest uppercase transition-all duration-500
-                    hover:bg-cyan-900/50 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(34,211,238,0.3)]
-                    disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden focus:outline-none focus:border-cyan-400
-                `}
-            >
-                <div className="absolute inset-0 w-full h-full bg-cyan-500/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
-                <span className="relative z-10 font-bold text-sm sm:text-base">
-                    {isBooting ? '[ BOOTING... ]' : '[ システムブート ]'}
-                </span>
-            </button>
+            {!isBooting ? (
+                <div className="flex flex-col gap-4 w-full sm:w-auto">
+                    <button
+                        onClick={() => handleBoot('simple')}
+                        className={`
+                            w-full relative group px-6 sm:px-12 py-4 border border-cyan-400/80 bg-cyan-900/40
+                            text-cyan-100 tracking-widest transition-all duration-300
+                            hover:bg-cyan-800/80 hover:border-cyan-300 hover:shadow-[0_0_20px_rgba(34,211,238,0.5)]
+                            focus:outline-none focus:border-cyan-300 font-bold text-sm sm:text-base
+                        `}
+                    >
+                        <div className="absolute inset-0 w-full h-full bg-cyan-400/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                        <span className="relative z-10">
+                            [ かんたんモードで開始 ]
+                        </span>
+                        <div className="relative z-10 text-[10px] sm:text-xs text-cyan-200 mt-1 font-normal opacity-80">
+                            やさしい言葉で未来を探す
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => handleBoot('future')}
+                        className={`
+                            w-full relative group px-6 sm:px-12 py-3 border border-cyan-800/50 bg-slate-900/50
+                            text-cyan-500 tracking-widest transition-all duration-500
+                            hover:bg-cyan-950/50 hover:border-cyan-600 hover:text-cyan-400
+                            focus:outline-none focus:border-cyan-600 text-xs sm:text-sm
+                        `}
+                    >
+                        <span className="relative z-10">
+                            [ 未来発見モード (標準) ]
+                        </span>
+                    </button>
+                </div>
+            ) : (
+                <div className="flex flex-col items-center">
+                    <div className="text-cyan-300 font-bold tracking-widest animate-pulse border border-cyan-500/50 px-12 py-4 bg-cyan-950/30">
+                        [ BOOTING... ]
+                    </div>
+                </div>
+            )}
 
             <div className="mt-12 md:mt-16 text-[10px] sm:text-xs text-cyan-800/80 tracking-widest text-center space-y-2">
                 <p>INITIALIZING NEURAL HANDSHAKE...</p>
