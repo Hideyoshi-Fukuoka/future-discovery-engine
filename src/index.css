@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-slate-950 text-cyan-400 font-mono overflow-hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom scrollbar to match terminal aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-slate-900;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-cyan-900 rounded;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-cyan-700;
+}

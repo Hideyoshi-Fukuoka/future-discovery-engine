@@ -1,0 +1,8 @@
+
+C:\Projects\FutureEnjine\src\engine\CoreEngine.js
+  124:13  error  'logicScore' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  125:13  error  'creativeScore' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  126:13  error  'socialScore' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+
+✖ 3 problems (3 errors, 0 warnings)
+
