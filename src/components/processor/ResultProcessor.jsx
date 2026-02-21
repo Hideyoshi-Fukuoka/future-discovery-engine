@@ -49,11 +49,11 @@ const ResultProcessor = ({ answers, metrics, onRestart }) => {
             </div>
 
             <div className={`transition-opacity duration-1000 ${step >= 0 ? 'opacity-100' : 'opacity-0'}`}>
-                <h2 className="text-3xl text-white mb-4">
-                    あなたの職業適性は <span className="text-cyan-300 font-bold tracking-wider">『{report.PersonalKernel.CareerMapping.TopClusters[0]}』</span> です。
+                <h2 className="text-2xl sm:text-3xl text-white mb-4">
+                    あなたの職業適性は <span className="text-cyan-300 font-bold tracking-wider inline-block">『{report.PersonalKernel.CareerMapping.TopClusters[0]}』</span> です。
                 </h2>
 
-                <div className="bg-cyan-950/20 p-6 border-l-4 border-cyan-600 mb-8 rounded">
+                <div className="bg-cyan-950/20 p-4 sm:p-6 border-l-4 border-cyan-600 mb-8 rounded text-sm sm:text-base">
                     <p className="text-cyan-100 leading-relaxed whitespace-pre-wrap">
                         {report.PersonalKernel.CareerMapping.LogicPath}
                     </p>
@@ -61,16 +61,16 @@ const ResultProcessor = ({ answers, metrics, onRestart }) => {
             </div>
 
             {/* Action Buttons */}
-            <div className={`flex gap-4 justify-center transition-opacity duration-1000 ${step >= 1 && step < 2 ? 'opacity-100' : 'opacity-0 pointer-events-none absolute'}`}>
+            <div className={`flex flex-col sm:flex-row gap-4 justify-center transition-opacity duration-1000 w-full ${step >= 1 && step < 2 ? 'opacity-100' : 'opacity-0 pointer-events-none absolute'}`}>
                 {step === 1 && (
                     <>
-                        <button onClick={() => handleAction(2)} className="px-6 py-3 border border-cyan-700 text-cyan-400 hover:bg-cyan-900/50 hover:text-cyan-200 transition-colors">
+                        <button onClick={() => handleAction(2)} className="w-full sm:w-auto px-4 sm:px-6 py-3 border border-cyan-700 text-cyan-400 hover:bg-cyan-900/50 hover:text-cyan-200 transition-colors text-sm sm:text-base focus:outline-none">
                             [ JSONデータを確認する ]
                         </button>
-                        <button onClick={() => handleAction(3)} className="px-6 py-3 border border-cyan-500 bg-cyan-900/40 text-cyan-100 hover:bg-cyan-800 hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] transition-all">
+                        <button onClick={() => handleAction(3)} className="w-full sm:w-auto px-4 sm:px-6 py-3 border border-cyan-500 bg-cyan-900/40 text-cyan-100 hover:bg-cyan-800 hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] transition-all text-sm sm:text-base focus:outline-none">
                             [ 終了する (未来日誌を生成) ]
                         </button>
-                        <button onClick={() => handleAction('restart')} className="px-6 py-3 border border-red-900/50 text-red-400 hover:bg-red-950/50 hover:text-red-300 transition-colors">
+                        <button onClick={() => handleAction('restart')} className="w-full sm:w-auto px-4 sm:px-6 py-3 border border-red-900/50 text-red-400 hover:bg-red-950/50 hover:text-red-300 transition-colors text-sm sm:text-base focus:outline-none">
                             [ 再診断する (因果律リセット) ]
                         </button>
                     </>

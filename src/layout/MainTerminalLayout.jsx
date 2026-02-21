@@ -36,7 +36,7 @@ const MainTerminalLayout = () => {
 
             <PersonalKernelSidebar phase={phase} />
 
-            <div className="flex-1 flex flex-col p-6 z-10 relative overflow-y-auto w-full max-w-4xl mx-auto">
+            <div className="flex-1 flex flex-col p-4 sm:p-6 z-10 relative overflow-y-auto w-full max-w-4xl mx-auto">
                 <div className="flex-1 flex flex-col justify-center items-center h-full w-full">
 
                     {phase === PHASES.INITIATION && (
@@ -71,16 +71,18 @@ const MainTerminalLayout = () => {
             </div>
 
             {phase !== PHASES.INITIATION && (
-                <MetadataLog answers={answers} />
+                <div className="hidden lg:flex shrink-0">
+                    <MetadataLog answers={answers} />
+                </div>
             )}
 
             {/* Paradox Glitch Overlay - Softened to subtle corner warning */}
             {paradoxAlert && (
-                <div className="fixed bottom-4 left-4 z-50 pointer-events-none flex items-center space-x-2 bg-red-950/80 border border-red-800/50 p-3 shadow-[0_0_15px_rgba(220,38,38,0.3)] animate-pulse">
-                    <span className="text-red-500 animate-ping">●</span>
-                    <div className="text-red-400 text-xs md:text-sm font-mono uppercase tracking-widest">
+                <div className="fixed bottom-safe left-safe bottom-2 sm:bottom-4 left-2 sm:left-4 z-50 pointer-events-none flex items-center space-x-2 bg-red-950/90 border border-red-800/80 p-2 sm:p-3 shadow-[0_0_15px_rgba(220,38,38,0.5)] animate-pulse max-w-[90vw]">
+                    <span className="text-red-500 animate-ping text-xs sm:text-base">●</span>
+                    <div className="text-red-400 text-[10px] sm:text-sm font-mono uppercase tracking-widest break-words">
                         [ ERROR: CAUSALITY PARADOX ]<br />
-                        <span className="text-red-500/80 text-[10px]">{paradoxAlert.message}</span>
+                        <span className="text-red-500/80 text-[8px] sm:text-[10px]">{paradoxAlert.message}</span>
                     </div>
                 </div>
             )}

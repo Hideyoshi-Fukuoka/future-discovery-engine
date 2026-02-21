@@ -78,18 +78,18 @@ const DiagnosisConsole = ({ question, currentQuestionIndex, totalQuestions, onAn
             <div
               key={idx}
               onClick={() => toggleSelection(idx)}
-              className={`flex items-center p-4 cursor-pointer border transition-all duration-200 group
+              className={`flex items-start sm:items-center p-4 cursor-pointer border transition-all duration-200 group
                 ${isSelected
                   ? 'border-cyan-400 bg-cyan-900/40 shadow-[inset_0_0_15px_rgba(34,211,238,0.2)]'
                   : 'border-cyan-900/50 bg-slate-900/50 hover:border-cyan-700 hover:bg-cyan-950/30'
                 }`}
             >
-              <div className={`w-5 h-5 mr-4 flex items-center justify-center border transition-colors
+              <div className={`shrink-0 w-5 h-5 mt-0.5 sm:mt-0 mr-4 flex items-center justify-center border transition-colors
                 ${isSelected ? 'border-cyan-300 bg-cyan-400' : 'border-cyan-700 bg-transparent group-hover:border-cyan-500'}`}
               >
                 {isSelected && <span className="w-2.5 h-2.5 bg-slate-900 block" />}
               </div>
-              <span className={`w-8 font-bold ${isSelected ? 'text-cyan-300' : 'text-cyan-700 group-hover:text-cyan-500'}`}>[{idx + 1}]</span>
+              <span className={`shrink-0 w-8 font-bold ${isSelected ? 'text-cyan-300' : 'text-cyan-700 group-hover:text-cyan-500'}`}>[{idx + 1}]</span>
               <span className={`flex-1 ${isSelected ? 'text-white' : 'text-slate-300 group-hover:text-cyan-100'}`}>
                 {opt.label}
               </span>
@@ -98,14 +98,14 @@ const DiagnosisConsole = ({ question, currentQuestionIndex, totalQuestions, onAn
         })}
       </div>
 
-      <div className="flex justify-between items-center border-t border-cyan-800/50 pt-4">
-        <div className="text-cyan-600 text-sm">
-          複数選択可 / 数字キー(1-9)で選択、Enterで送信
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end border-t border-cyan-800/50 pt-4 gap-4 sm:gap-0">
+        <div className="text-cyan-600 text-[10px] sm:text-sm text-center sm:text-left">
+          複数選択可 / 数字キー(1-9)で選択<br className="sm:hidden" /> Enterで送信
         </div>
         <button
           onClick={handleSubmit}
           disabled={selectedIndices.size === 0}
-          className={`px-8 py-3 font-bold tracking-widest transition-all duration-300 border
+          className={`w-full sm:w-auto px-8 py-3 font-bold tracking-widest transition-all duration-300 border focus:outline-none
             ${selectedIndices.size > 0
               ? 'border-cyan-400 text-cyan-100 bg-cyan-900/60 hover:bg-cyan-800 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] cursor-pointer'
               : 'border-cyan-900/50 text-cyan-900 bg-transparent cursor-not-allowed'
