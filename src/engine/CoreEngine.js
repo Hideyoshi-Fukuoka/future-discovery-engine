@@ -121,12 +121,16 @@ export class CoreEngine {
             if (isNaN(qNum)) return;
 
             selectedIndices.forEach(num => {
+                const isDeep = num > 4;
+                const baseNum = isDeep ? num - 4 : num;
+                const weight = isDeep ? 2 : 1;
+
                 if (qNum >= 1 && qNum <= 7) {
-                    x += (num <= 2 ? 1 : -1); // 1,2は論理寄り
+                    x += (baseNum <= 2 ? weight : -weight); // 1,2は論理寄り
                 } else if (qNum >= 8 && qNum <= 13) {
-                    y += (num % 2 === 1 ? 1 : -1); // 奇数は構造寄り
+                    y += (baseNum % 2 === 1 ? weight : -weight); // 奇数は構造寄り
                 } else if (qNum >= 21 && qNum <= 25) { // Updated to exactly capture Q21-25 as intended
-                    z += (num === 1 || num === 3 ? 1 : -1); // 1,3は仮想/電脳寄り
+                    z += (baseNum === 1 || baseNum === 3 ? weight : -weight); // 1,3は仮想/電脳寄り
                 }
             });
         });
