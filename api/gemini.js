@@ -52,6 +52,7 @@ ${JSON.stringify(personalKernel.Values_Philosophy, null, 2)}
 制約:
 - 挨拶や情緒的な装飾は一切不要。
 - 語彙は高純度の論理と専門用語を用いつつ、知性に響く「鋭さ」を持たせよ。
+- 【重要】レイアウトメタ指示：出力テキストにおいて、重要なキーワード（職業特性や結論など）は必ず **BOLD** （Markdown形式の太字）にせよ。また、被験者が修正を迷った形跡（軌道修正回数など）から推測される関連キーワードについては、必ず \`<span class="hesitation">キーワード</span>\` のようにHTMLタグで囲んで出力せよ。
         `;
 
         const promptSimple = `
@@ -73,6 +74,7 @@ ${JSON.stringify(personalKernel.Values_Philosophy, null, 2)}
 制約:
 - 挨拶や自己紹介（「私は未来の案内人です」等）は短く温かく。
 - 全体的に希望に満ちていて、読んだ人が「明日もがんばろう」と思えるトーンにすること。
+- 【重要】レイアウトメタ指示：出力テキストにおいて、ポジティブで重要なキーワード（才能や素敵なところ）は必ず **BOLD** （Markdown形式の太字）にしてください。また、迷いや葛藤から生まれたであろう思慮深さを示すキーワードについては、必ず \`<span class="hesitation">キーワード</span>\` のようにHTMLタグで囲んで出力してください。
         `;
 
         const prompt = appMode === 'simple' ? promptSimple : promptFuture;

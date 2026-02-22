@@ -30,7 +30,7 @@ const MainTerminalLayout = () => {
     const currentWeights = CoreEngine.calculateWeights(answers);
 
     return (
-        <div className="flex h-screen w-screen bg-slate-950 text-cyan-400 overflow-hidden relative font-base selection:bg-cyan-900 selection:text-white">
+        <div className="flex h-screen w-screen bg-bg-deep-void text-obs-cyan overflow-hidden relative font-base selection:bg-obs-cyan/20 selection:text-logic-white">
             <div className="absolute inset-0 z-0 opacity-30 pointer-events-none">
                 <DynamicGridBackground weights={currentWeights} entropy={entropy} />
             </div>
@@ -82,11 +82,11 @@ const MainTerminalLayout = () => {
 
             {/* Paradox Glitch Overlay - Softened to subtle corner warning */}
             {paradoxAlert && phase !== PHASES.RESULT && (
-                <div className="fixed bottom-safe left-safe bottom-2 sm:bottom-4 left-2 sm:left-4 z-50 pointer-events-none flex items-center space-x-2 bg-red-950/90 border border-red-800/80 p-2 sm:p-3 shadow-[0_0_15px_rgba(220,38,38,0.5)] animate-pulse max-w-[90vw]">
-                    <span className="text-red-500 animate-ping text-xs sm:text-base">●</span>
-                    <div className="text-red-400 text-[10px] sm:text-sm font-mono uppercase tracking-widest break-words">
+                <div className="fixed bottom-safe left-safe bottom-2 sm:bottom-4 left-2 sm:left-4 z-50 pointer-events-none flex items-center space-x-2 bg-ano-magenta/20 border border-ano-magenta p-2 sm:p-3 shadow-[0_0_15px_rgba(236,72,153,0.5)] animate-pulse max-w-[90vw]">
+                    <span className="text-ano-magenta animate-ping text-xs sm:text-base">●</span>
+                    <div className="text-ano-magenta text-[10px] sm:text-sm font-data uppercase tracking-widest break-words">
                         [ ERROR: CAUSALITY PARADOX ]<br />
-                        <span className="text-red-500/80 text-[8px] sm:text-[10px]">{paradoxAlert.message}</span>
+                        <span className="text-ano-magenta/80 text-[8px] sm:text-[10px]">{paradoxAlert.message}</span>
                     </div>
                 </div>
             )}

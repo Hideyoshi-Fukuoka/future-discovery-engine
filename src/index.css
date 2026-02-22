@@ -1,25 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  @apply bg-slate-950 text-cyan-400 font-mono overflow-hidden;
+  @apply bg-bg-deep-void text-obs-cyan font-prose overflow-hidden;
   margin: 0;
   padding: 0;
+  touch-action: pan-x pan-y;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Custom scrollbar to match terminal aesthetic */
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  @apply bg-slate-900;
+  @apply bg-bg-deep-void;
 }
+
 ::-webkit-scrollbar-thumb {
-  @apply bg-cyan-900 rounded;
+  @apply bg-obs-cyan/30 rounded;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-cyan-700;
+  @apply bg-obs-cyan/50;
+}
+
+/* Semantic Typography & Feedback Classes */
+.hesitation {
+  @apply text-hes-amber font-bold animate-pulse inline-block;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+  backdrop-filter: blur(1px);
 }

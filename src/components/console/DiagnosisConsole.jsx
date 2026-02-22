@@ -60,15 +60,15 @@ const DiagnosisConsole = ({ appMode, question, currentQuestionIndex, totalQuesti
 
   return (
     <div className="w-full max-w-2xl font-mono">
-      <div className="mb-4 border-b border-cyan-800 pb-2 flex justify-between items-center">
-        <h3 className="text-sm sm:text-xl text-cyan-400">
+      <div className="mb-4 border-b border-obs-cyan/50 pb-2 flex justify-between items-center font-data">
+        <h3 className="text-sm sm:text-xl text-obs-cyan">
           [ {appMode === 'simple' ? '診断' : '状態'}: Phase 2 | {appMode === 'simple' ? '質問' : '進捗'}: {currentQuestionIndex + 1} / {totalQuestions} ]
         </h3>
-        <span className="text-xs text-cyan-700 animate-pulse hidden sm:inline">AWAITING_INPUT...</span>
+        <span className="text-xs text-obs-cyan/80 animate-pulse hidden sm:inline">AWAITING_INPUT...</span>
       </div>
 
-      <div className="mb-8 border-b border-cyan-800 pb-4">
-        <p className="text-lg text-white leading-relaxed whitespace-pre-wrap">
+      <div className="mb-8 border-b border-obs-cyan/50 pb-4">
+        <p className="text-lg text-logic-white leading-relaxed whitespace-pre-wrap font-prose">
           {displayText}
         </p>
       </div>
@@ -77,23 +77,32 @@ const DiagnosisConsole = ({ appMode, question, currentQuestionIndex, totalQuesti
         {question.options.map((opt, idx) => {
           const isSelected = selectedIndices.has(idx);
           const displayLabel = appMode === 'simple' && opt.labelSimple ? opt.labelSimple : opt.label;
+
+          // Hesitation glitch representation: if user corrects answers, add visual noise
+          const isHesitating = corrections > 2;
+
           return (
             <div
               key={idx}
               onClick={() => toggleSelection(idx)}
-              className={`flex items-start sm:items-center p-4 cursor-pointer border transition-all duration-200 group
+              className={`flex items-start sm:items-center p-4 cursor-pointer border transition-all duration-200 group relative overflow-hidden
                 ${isSelected
-                  ? 'border-cyan-400 bg-cyan-900/40 shadow-[inset_0_0_15px_rgba(34,211,238,0.2)]'
-                  : 'border-cyan-900/50 bg-slate-900/50 hover:border-cyan-700 hover:bg-cyan-950/30'
+                  ? 'border-obs-cyan bg-obs-cyan/10 shadow-[inset_0_0_15px_rgba(0,255,255,0.2)]'
+                  : 'border-obs-cyan/50 bg-bg-deep-void/50 hover:border-obs-cyan/80 hover:bg-obs-cyan/5'
                 }`}
             >
-              <div className={`shrink-0 w-5 h-5 mt-0.5 sm:mt-0 mr-4 flex items-center justify-center border transition-colors
-                ${isSelected ? 'border-cyan-300 bg-cyan-400' : 'border-cyan-700 bg-transparent group-hover:border-cyan-500'}`}
+              {isHesitating && isSelected && (
+                <div className="absolute inset-0 bg-hes-amber/10 mix-blend-overlay backdrop-blur-[2px] animate-pulse pointer-events-none"></div>
+              )}
+              <div className={`shrink-0 w-5 h-5 mt-0.5 sm:mt-0 mr-4 flex items-center justify-center border transition-colors relative z-10
+                ${isSelected
+                  ? (isHesitating ? 'border-hes-amber bg-hes-amber' : 'border-obs-cyan bg-obs-cyan')
+                  : 'border-obs-cyan/70 bg-transparent group-hover:border-obs-cyan'}`}
               >
-                {isSelected && <span className="w-2.5 h-2.5 bg-slate-900 block" />}
+                {isSelected && <span className="w-2.5 h-2.5 bg-bg-deep-void block" />}
               </div>
-              <span className={`shrink-0 w-8 font-bold ${isSelected ? 'text-cyan-300' : 'text-cyan-700 group-hover:text-cyan-500'}`}>[{idx + 1}]</span>
-              <span className={`flex-1 ${isSelected ? 'text-white' : 'text-slate-300 group-hover:text-cyan-100'}`}>
+              <span className={`shrink-0 w-8 font-bold relative z-10 font-data ${isSelected ? (isHesitating ? 'text-hes-amber' : 'text-obs-cyan') : 'text-obs-cyan/70 group-hover:text-obs-cyan'}`}>[{idx + 1}]</span>
+              <span className={`flex-1 relative z-10 font-prose ${isSelected ? 'text-logic-white' : 'text-slate-300 group-hover:text-logic-white'}`}>
                 {displayLabel}
               </span>
             </div>
@@ -101,8 +110,8 @@ const DiagnosisConsole = ({ appMode, question, currentQuestionIndex, totalQuesti
         })}
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end border-t border-cyan-800/50 pt-4 gap-4 sm:gap-0">
-        <div className="text-cyan-600 text-[10px] sm:text-sm text-center sm:text-left">
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end border-t border-obs-cyan/30 pt-4 gap-4 sm:gap-0 font-data">
+        <div className="text-obs-cyan/70 text-[10px] sm:text-sm text-center sm:text-left">
           複数選択可 / 数字キー(1-9)で選択<br className="sm:hidden" /> Enterで送信
         </div>
         <button
@@ -110,8 +119,8 @@ const DiagnosisConsole = ({ appMode, question, currentQuestionIndex, totalQuesti
           disabled={selectedIndices.size === 0}
           className={`w-full sm:w-auto px-8 py-3 font-bold tracking-widest transition-all duration-300 border focus:outline-none
             ${selectedIndices.size > 0
-              ? 'border-cyan-400 text-cyan-100 bg-cyan-900/60 hover:bg-cyan-800 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] cursor-pointer'
-              : 'border-cyan-900/50 text-cyan-900 bg-transparent cursor-not-allowed'
+              ? 'border-obs-cyan text-logic-white bg-obs-cyan/20 hover:bg-obs-cyan/30 hover:shadow-[0_0_20px_rgba(0,255,255,0.4)] cursor-pointer'
+              : 'border-obs-cyan/30 text-obs-cyan/50 bg-transparent cursor-not-allowed'
             }`}
         >
           [ 回答を送信 ]

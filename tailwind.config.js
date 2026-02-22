@@ -7,6 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
+        'obs-cyan': '#00FFFF',
+        'logic-white': '#F8FAFC',
+        'hes-amber': '#F59E0B',
+        'ano-magenta': '#EC4899',
+        'bg-deep-void': '#020617',
         slate: {
           950: '#020617',
         },
@@ -15,7 +20,10 @@ export default {
         },
       },
       fontFamily: {
-        mono: ['"JetBrains Mono"', 'monospace'],
+        title: ['"Black Ops One"', 'system-ui', 'sans-serif'],
+        data: ['"JetBrains Mono"', 'monospace'],
+        prose: ['"Inter"', '"Noto Sans JP"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'], // Keep for backward compatibility
       },
       animation: {
         'scanline': 'scanline 8s linear infinite',
