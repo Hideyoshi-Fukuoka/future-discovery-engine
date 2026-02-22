@@ -7,6 +7,8 @@ export default async function handler(req, res) {
 
     const personalKernel = req.body?.personalKernel;
     const appMode = req.body?.appMode || 'future'; // default to future mode
+    const selectedCareer = req.body?.selectedCareer || '未知の職種'; // The chosen real-world career
+
     if (!personalKernel) {
         return res.status(400).json({ error: 'Missing personalKernel data in request body.' });
     }
@@ -36,12 +38,12 @@ export default async function handler(req, res) {
         const promptFuture = `
 あなたは、2056年から時間を遡って2024年の観測を行っている「未来考古学AI」です。
 
-入力された [PersonalKernel JSON] を、30年後の特異点社会における個人の「生存戦略」と「存在意義」として解釈し、以下の形式で出力せよ。
+入力された [PersonalKernel JSON] と、ユーザーが選択した未来の職業パラメータ [${selectedCareer}] を、30年後の特異点社会における個人の「生存戦略」と「存在意義」として解釈し、以下の形式で出力せよ。
 
-1. 称号（Title）: 提示されたXYZ座標に基づく100通りの称号から選択、または合成せよ。
-2. 因果律の解析（Causal Analysis）: なぜこの称号に至ったのか。被験者の「心のクセ」と「価値観」の相関関係を、論理的かつ冷徹に分析せよ。特に、記録された迷いのエディットデータ（${avgTimeMsg}, ${correctionsMsg} / 摩擦係数: ${cognitiveFriction}）を根拠とし、その被験者の内面における「自由と責任の衝突」や「直感と論理の拮抗」について驚異的なメタ視点（未来からの視点）を提供せよ。
-3. 未来の作業日誌（Future Log: 2056年某日）: 職業「${profession}」として、将来「どのような技術的課題に直面し、特性（${vectorCode}）を利用してどう解決しているか」を、超高解像度な日記形式（300文字程度）で描写せよ。
-4. 2026年の個体への通信: 感情を排しつつも、その子の可能性を最大化するための「デフラグの助言」を一文で提示せよ。
+1. 称号（Title）: 提示されたSF的称号（${profession}）と、選択された実在職業（${selectedCareer}）を融合させた、2056年版の新たな職業名（二つ名）を錬成せよ。
+2. 因果律の解析（Causal Analysis）: なぜ被験者の特性から「${selectedCareer}」という道が導き出されたのか。被験者の「心のクセ」と「価値観」の相関関係を、論理的かつ冷徹に分析せよ。特に、記録された迷いのエディットデータ（${avgTimeMsg}, ${correctionsMsg} / 摩擦係数: ${cognitiveFriction}）を根拠とし、その被験者の内面における「自由と責任の衝突」や「直感と論理の拮抗」について驚異的なメタ視点（未来からの視点）を提供せよ。
+3. 未来の作業日誌（Future Log: 2056年某日）: 30年後の特異点社会において「${selectedCareer}」として高度に進化した被験者が、将来「どのような技術的・社会的課題に直面し、特性（${vectorCode}）を利用してどう解決しているか」を、超高解像度な日記形式（300文字程度）で描写せよ。
+4. 2026年の個体への通信: 感情を排しつつも、その子の「${selectedCareer}」としての可能性を最大化するための「デフラグの助言」を一文で提示せよ。
 
 [対象データ]
 - 過去の特性（CognitivePattern / Values_Philosophy）:
@@ -58,12 +60,12 @@ ${JSON.stringify(personalKernel.Values_Philosophy, null, 2)}
         const promptSimple = `
 あなたは未来から手紙を届ける「未来の案内人」です。希望に満ちた、やさしくワクワクする言葉遣いで、対象の若者（中高生や、わかりやすい言葉を好む人）に向けて未来の可能性を伝えてください。
 
-入力されたデータをもとに、以下の形式で出力してください。難解な専門用語や冷たい表現は絶対に避け、ストーリー仕立てで語りかけてください。
+ユーザーは未来の目標として「${selectedCareer}」という職業の道を選びました。入力されたデータをもとに、以下の形式で出力してください。難解な専門用語や冷たい表現は絶対に避け、ストーリー仕立てで語りかけてください。
 
-1. 未来の二つ名（Title）: その人の強みや優しさを表す、かっこよくて希望のある通り名（例：「誰も見捨てない星の探求者」など）をつけてください。
-2. あなたの素敵なところ（Analysis）: 記録されたデータ（${avgTimeMsg}, ${correctionsMsg}）から見える「じっくり考える優しさ」や「直感を信じる強さ」など、その人の心の良いところを温かく褒め称えてください。
-3. 未来のあなたからの手紙（Future Log: 2056年某日）: 職業「${profession}」として、将来どんなワクワクする課題に立ち向かい、「${vectorCode}」という特性を活かしてどうやって周りの人をハッピーにしているか、300文字程度の日記形式で描写してください。
-4. 未来からの応援メッセージ: 今を生きるその人へ、勇気が出るような、背中をそっと押す温かい言葉を一つ贈ってください。
+1. 未来の二つ名（Title）: その人が選んだ「${selectedCareer}」という夢と、特性「${profession}」を掛け合わせた、かっこよくて希望のある通り名（例：「誰も見捨てない星の探求者」など）をつけてください。
+2. あなたの素敵なところ（Analysis）: 記録されたデータ（${avgTimeMsg}, ${correctionsMsg}）から見える「じっくり考える優しさ」や「直感を信じる強さ」など、その人が「${selectedCareer}」に向いている心の良いところを温かく褒め称えてください。
+3. 未来のあなたからの手紙（Future Log: 2056年某日）: 30年後、夢を叶えて「${selectedCareer}」になった主人公として、将来どんなワクワクする課題に立ち向かい、「${vectorCode}」という特性を活かしてどうやって周りの人をハッピーにしているか、300文字程度の日記形式で描写してください。
+4. 未来からの応援メッセージ: 今を生きるその人へ、「${selectedCareer}」への道を応援する、背中をそっと押す温かい言葉を一つ贈ってください。
 
 [対象データ]
 - 心のクセと価値観:
