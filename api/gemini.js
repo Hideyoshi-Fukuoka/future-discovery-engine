@@ -8,6 +8,7 @@ export default async function handler(req, res) {
     const personalKernel = req.body?.personalKernel;
     const appMode = req.body?.appMode || 'future'; // default to future mode
     const selectedCareer = req.body?.selectedCareer || '未知の職種'; // The chosen real-world career
+    const previousCareers = req.body?.previousCareers || []; // Track viewed futures
 
     if (!personalKernel) {
         return res.status(400).json({ error: 'Missing personalKernel data in request body.' });
@@ -35,6 +36,19 @@ export default async function handler(req, res) {
         const avgTimeMsg = rawMetrics.AverageTimePerNodeMs ? `平均観測時間 ${rawMetrics.AverageTimePerNodeMs}ms` : "観測時間不明";
         const correctionsMsg = rawMetrics.TotalInputCorrections !== undefined ? `軌道修正回数 ${rawMetrics.TotalInputCorrections}回` : "軌道修正不明";
 
+        const isParallelWorld = previousCareers.length > 0;
+        const prevCareerText = isParallelWorld ? previousCareers[previousCareers.length - 1] : "";
+
+        const writingStyleLabels = personalKernel.WritingStyle && personalKernel.WritingStyle.Tone
+            ? personalKernel.WritingStyle.Tone.join(", ")
+            : "論理的かつ標準的な";
+
+        const parallelInstructionFuture = isParallelWorld
+            ? `\n- 【重要】今回は「別の未来を見る」が選択された並行世界（パラレルワールド）の観測です。冒頭の一文で、前回の観測（${prevCareerText}）との「論理的・構造的な差異」に言及し、並行世界へのシフトが完了したことを示唆せよ。`
+            : "";
+
+        const styleInstructionFuture = `\n- 【重要】レポート全体の文章トーンおよび未来の作業日誌の文体は、被験者の「伝え方」のスタイル（${writingStyleLabels}）を忠実に反映したリズム感や言葉選びで記述せよ。`;
+
         const promptFuture = `
 あなたは、2056年から時間を遡って2024年の観測を行っている「未来考古学AI」です。
 
@@ -54,8 +68,14 @@ ${JSON.stringify(personalKernel.Values_Philosophy, null, 2)}
 制約:
 - 挨拶や情緒的な装飾は一切不要。
 - 語彙は高純度の論理と専門用語を用いつつ、知性に響く「鋭さ」を持たせよ。
-- 【重要】レイアウトメタ指示：出力テキストにおいて、重要なキーワード（職業特性や結論など）は必ず **BOLD** （Markdown形式の太字）にせよ。また、被験者が修正を迷った形跡（軌道修正回数など）から推測される関連キーワードについては、必ず \`<span class="hesitation">キーワード</span>\` のようにHTMLタグで囲んで出力せよ。
+- 【重要】レイアウトメタ指示：出力テキストにおいて、重要なキーワード（職業特性や結論など）は必ず **BOLD** （Markdown形式の太字）にせよ。また、被験者が修正を迷った形跡（軌道修正回数など）から推測される関連キーワードについては、必ず \`<span class="hesitation">キーワード</span>\` のようにHTMLタグで囲んで出力せよ。${parallelInstructionFuture}${styleInstructionFuture}
         `;
+
+        const parallelInstructionSimple = isParallelWorld
+            ? `\n- 【重要】今回は「別の未来」を見るための並行世界の観測です。冒頭の一文で、前回の夢（${prevCareerText}）とは違う新しい可能性の扉が開いたことを優しく伝えてください。`
+            : "";
+
+        const styleInstructionSimple = `\n- 【重要】手紙全体の文章トーンは、その子が持つ「伝え方」のスタイル（${writingStyleLabels}）に少しだけ寄り添った、親しみやすく丁寧な文体で記述してください。`;
 
         const promptSimple = `
 あなたは未来から手紙を届ける「未来の案内人」です。希望に満ちた、やさしくワクワクする言葉遣いで、対象の若者（中高生や、わかりやすい言葉を好む人）に向けて未来の可能性を伝えてください。
@@ -76,7 +96,7 @@ ${JSON.stringify(personalKernel.Values_Philosophy, null, 2)}
 制約:
 - 挨拶や自己紹介（「私は未来の案内人です」等）は短く温かく。
 - 全体的に希望に満ちていて、読んだ人が「明日もがんばろう」と思えるトーンにすること。
-- 【重要】レイアウトメタ指示：出力テキストにおいて、ポジティブで重要なキーワード（才能や素敵なところ）は必ず **BOLD** （Markdown形式の太字）にしてください。また、迷いや葛藤から生まれたであろう思慮深さを示すキーワードについては、必ず \`<span class="hesitation">キーワード</span>\` のようにHTMLタグで囲んで出力してください。
+- 【重要】レイアウトメタ指示：出力テキストにおいて、ポジティブで重要なキーワード（才能や素敵なところ）は必ず **BOLD** （Markdown形式の太字）にしてください。また、迷いや葛藤から生まれたであろう思慮深さを示すキーワードについては、必ず \`<span class="hesitation">キーワード</span>\` のようにHTMLタグで囲んで出力してください。${parallelInstructionSimple}${styleInstructionSimple}
         `;
 
         const prompt = appMode === 'simple' ? promptSimple : promptFuture;

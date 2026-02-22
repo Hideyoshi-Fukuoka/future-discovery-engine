@@ -8,6 +8,7 @@ const ResultProcessor = ({ appMode, answers, metrics, onRestart }) => {
     const [futureLogStream, setFutureLogStream] = useState('');
     const [isStreaming, setIsStreaming] = useState(false);
     const [selectedCareer, setSelectedCareer] = useState(null);
+    const [previousCareers, setPreviousCareers] = useState([]);
 
     const report = useMemo(() => CoreEngine.generateReport(answers, metrics), [answers, metrics]);
 
@@ -33,10 +34,16 @@ const ResultProcessor = ({ appMode, answers, metrics, onRestart }) => {
             setFutureLogStream('');
             setSelectedCareer(payload);
 
-            await GeminiService.generateFutureLogStream(report.PersonalKernel, appMode, payload, (chunk) => {
+            const currentPrevious = [...previousCareers];
+
+            await GeminiService.generateFutureLogStream(report.PersonalKernel, appMode, payload, currentPrevious, (chunk) => {
                 setFutureLogStream(prev => prev + chunk);
             });
             setIsStreaming(false);
+
+            if (!previousCareers.includes(payload)) {
+                setPreviousCareers(prev => [...prev, payload]);
+            }
 
         } else if (nextStep === 1) {
             // Return to career selection from future log
