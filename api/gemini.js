@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { kv } from "@vercel/kv";
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -22,7 +23,23 @@ export default async function handler(req, res) {
         return res.end();
     }
 
+    let currentUsage = 0;
+    const GEMINI_MAX_BUDGET_USD = parseFloat(process.env.GEMINI_MAX_BUDGET_USD || '1.0');
+
     try {
+        // Vercel KVから現在の利用額を取得 (設定がない場合はエラーを無視して0として扱う)
+        try {
+            currentUsage = parseFloat(await kv.get('gemini_usage_usd') || '0');
+        } catch (kvError) {
+            console.warn("KV Storage not configured or accessible. Skipping budget check.");
+        }
+
+        if (currentUsage >= GEMINI_MAX_BUDGET_USD) {
+            res.writeHead(429, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive' });
+            res.write("ERROR: BUDGET LIMIT EXCEEDED. 予算上限に達したため、APIの利用を一時停止しています。");
+            return res.end();
+        }
+
         const genAI = new GoogleGenerativeAI(API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
@@ -114,6 +131,24 @@ ${JSON.stringify(personalKernel.Values_Philosophy, null, 2)}
         for await (const chunk of result.stream) {
             const chunkText = chunk.text();
             res.write(chunkText);
+        }
+
+        try {
+            const finalResponse = await result.response;
+            if (finalResponse.usageMetadata) {
+                const promptTokens = finalResponse.usageMetadata.promptTokenCount || 0;
+                const candidatesTokens = finalResponse.usageMetadata.candidatesTokenCount || 0;
+                // gemini-2.5-flash 料金体系 (1M tokensあたり)
+                // Input: $0.075 / 1M, Output: $0.30 / 1M
+                const cost = (promptTokens / 1000000) * 0.075 + (candidatesTokens / 1000000) * 0.30;
+
+                // Vercel KVを更新
+                const latestUsage = parseFloat(await kv.get('gemini_usage_usd') || '0');
+                await kv.set('gemini_usage_usd', latestUsage + cost);
+                console.log(`Generated cost: $${cost.toFixed(6)}, Total usage approx: $${(latestUsage + cost).toFixed(6)}`);
+            }
+        } catch (usageError) {
+            console.warn("Failed to update KV usage:", usageError.message);
         }
 
         res.end();

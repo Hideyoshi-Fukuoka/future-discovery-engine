@@ -17,6 +17,16 @@ export const GeminiService = {
                 body: JSON.stringify({ personalKernel, appMode, selectedCareer, previousCareers })
             });
 
+            if (!response.ok) {
+                if (response.status === 429) {
+                    const errorMsg = "\n[SYSTEM ALERT: API BUDGET EXCEEDED]\n予算上限に達したため、一時的に未来へのアクセスを制限しています。\n";
+                    if (onChunk) onChunk(errorMsg);
+                    return errorMsg;
+                }
+                const errorText = await response.text();
+                throw new Error(errorText || `HTTP Exception: ${response.status}`);
+            }
+
             if (!response.body) {
                 throw new Error("ReadableStream not supported by this browser.");
             }
